@@ -12,7 +12,7 @@ MATLAB script to calculate section properties, neutral axis, and maximum bending
 • 2D subplots are implemented, showing both the real and transformed cross-section with the Neutral Axis overlaid.
 
 ----------------------------------------------------------------------------------------------------------------------------
-Example of a simple 2-shaped beam demonstrating the different Modulus of Elasticity transforms the cross-section
+Example of a simple 2-shaped beam demonstrating how different material elasticities transform the cross-section
   - "Real Cross-Section" shows what the beam's cross-section looks like in real life
   - "Transformed Cross-Section" shows how the script sees the cross-section to make calculations properly
   - Overlay of the Neutral Axis is seen as the horizontal dashed line
