@@ -20,7 +20,7 @@ Example of a simple 2-shaped beam demonstrating how different material elasticit
   - Bottom shape had an Elasticity of 10 megapascals
   - 3:1 elasticity ratio transformed the base by 3
 
-  - Output stresses consisted of:
+  - Bending Moment of 100,000 in-lbs output stresses consisting of:
 
       Top Stress - 17,306.69 psi
 
