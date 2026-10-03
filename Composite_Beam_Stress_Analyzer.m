@@ -2,7 +2,7 @@ clear;clc;clf;
 
 % Creates zero matrices for necessary variables
 shape_number = input('How many rectangles?: ');
-BM = input('Enter bending moment (in-lb): '); % Other units can be used if consistent, output won't be psi
+BM = input('Enter bending moment: ');         % Other units can be used if consistent, output won't be psi
 b = zeros(1, shape_number);                   % Zero matrix for base dimensions   
 b_transformed = zeros(1, shape_number);       % Zero matrix for transformed base dimensions       
 h = zeros(1, shape_number);                   % Zero matrix for height dimensions    
@@ -11,7 +11,9 @@ area = zeros(1, shape_number);                % Zero matrix for area dimensions
 e = zeros(1, shape_number);                   % Zero matrix for Modulus of Elasticity dimensions       
 x_val = zeros(5, shape_number);               % Zero matrix for real x-values dimensions          
 x_val_trans = zeros(5, shape_number);         % Zero matrix for transformed x-values dimensions          
-y_val = zeros(5, shape_number);               % Zero matrix for real and transformed y-values dimensions           
+y_val = zeros(5, shape_number);               % Zero matrix for real and transformed y-values dimensions  
+stress_top = zeros(1, shape_number);          % Zero matrix for top stresses of each shape
+stress_bottom = zeros(1, shape_number);       % Zero matrix for bottom stresses of each shape
 
 % Inputs data into matrices given by user
 for i = 1:shape_number
@@ -26,9 +28,13 @@ for i = 1:shape_number
 
 end
 
+n = e./min(e);       % Defines ratio of elastic moduli
+y_top = c + h/2;     % Defines an array of y-values of top of shape
+y_bottom = c - h/2;  % Defines an array of y-values of bottom of shape
+
 for i = 1:shape_number
 
-    b_transformed(i) = e(i)/min(e) * b(i);      % Transforms base dimensions
+    b_transformed(i) = n(i)*b(i);      % Transforms base dimensions
     area(i) = b_transformed(i)*h(i);            % Calculates area 
 
     x_val_trans(1,i) = b_transformed(i)/2;      % These are the transformed x-values
@@ -53,19 +59,26 @@ end
 
 % Calculates y_bar and area moment of inertia
 y_bar = sum(area(1,:).*c(1,:))/sum(area(:));
-AMOI = sum(1/12.*b_transformed(1,:).*h(1,:).^3 + area(1,:).*abs(c(1,:)-y_bar).^2);
+AMOI = sum(1/12.*b_transformed(1,:).*h(1,:).^3 + area(1,:).*(c(1,:)-y_bar).^2);
+
+
+% Calculates and prints top and bottom stresses of each material region
+for i = 1:shape_number
+    stress_top(i) = n(i)*BM*(y_top(i) - y_bar)/AMOI; 
+    stress_bottom(i) = n(i)*BM*(y_bottom(i) - y_bar)/AMOI;
+
+    fprintf('\n Rectangle %d \n', i);
+    fprintf('Top Stress: %.2f \n', stress_top(i));
+    fprintf('Bottom Stress: %.2f \n', stress_bottom(i));
+end
+
+% Finds and prints the max Tension and Compression values
+all_stresses = [stress_top stress_bottom];
+fprintf('\nMaximum Tension: %.2f \n', max(all_stresses));
+fprintf('Maximum Compression: %.2f \n', min(all_stresses));
 
 % Calculates height of rectangle from bottom
 true_height = h(1,:)./2 + c(1,:);
-
-% Calculates stresses for top and bottom
-stress_top = BM*(max(true_height)-y_bar)/AMOI;
-stress_bot = BM*y_bar/AMOI;
-
-% Displays output values
-fprintf('Top stress is %.2f psi\n', stress_top);
-fprintf('Bottom stress is %.2f\n', stress_bot);
-
 
 % Plots shapes
 for i = 1:shape_number
@@ -86,7 +99,7 @@ for i = 1:shape_number
 
     % Defines graph limits based off shapes
     yline(y_bar, "--", 'LineWidth',2);
-    xlim([-1*max(b)/2-0.5, max(b)/2+0.5]);
+    xlim([-1*max(b)/2-0.5, max(b_transformed)/2+0.5]);
     ylim([-1, max(true_height) + 1]);
     axis equal;
     grid on;
