@@ -22,8 +22,21 @@ Example of a simple 2-shaped beam demonstrating how different material elasticit
 
   - Bending Moment of 100,000 in-lbs output stresses consisting of:
 
-      Top Stress - 17,306.69 psi
+           Rectangle 1
+    
+        Top Stress: -5769.23 psi
+    
+        Bottom Stress: -28846.15 psi
 
-      Bottom Stress - 28,846.15 psi 
+           Rectangle 2
+    
+        Top Stress: 51923.08 psi
+    
+        Bottom Stress: -17307.69 psi
+    
+
+        Maximum Tension: 51923.08 psi
+    
+        Maximum Compression: -28846.15 psi
 
 <img width="650" height="500" alt="Figure_1" src="https://github.com/user-attachments/assets/36a63b47-241a-4a59-80fd-cc6f9e09d277" />
